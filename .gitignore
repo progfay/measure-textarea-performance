@@ -1,2 +1,4 @@
+dist
 public/measurement/*
 !public/measurement/.gitkeep
+.vscode
