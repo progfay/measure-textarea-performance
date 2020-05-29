@@ -10,7 +10,9 @@ const PORT = 3000
 
 const main = async () => {
   const server = express()
-  server.use(cors())
+  server.use(cors({
+    origin: 'https://chromedevtools.github.io'
+  }))
   server.use(express.static(PUBLIC_DIR))
   await new Promise(resolve => { server.listen(3000, resolve) })
   console.log(`Static file hosting on http://localhost:${PORT}`)
