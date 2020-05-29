@@ -6,6 +6,7 @@ module.exports = {
   ],
   plugins: [],
   rules: {
+    '@typescript-eslint/no-unused-vars': ["error", { "varsIgnorePattern": "^pragma$" }],
     '@typescript-eslint/strict-boolean-expressions': 0,
     '@typescript-eslint/explicit-function-return-type': 0,
     '@typescript-eslint/prefer-nullish-coalescing': 0

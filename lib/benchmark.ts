@@ -6,12 +6,18 @@ import { v4 as uuid } from 'uuid'
 import type { Task } from '@types'
 
 export const benchmark = async (url: string, task: Task) => {
-  const dist = path.join('measurement', `${task.name || uuid()}.json`)
+  const distDir = `${task.name || 'anonymous'}-${uuid()}`
+
+  await fs.mkdir(path.resolve('public', distDir))
+  await fs.writeFile(
+    path.resolve('public', distDir, 'index.html'),
+    task.html
+  )
 
   const browser = await puppeteer.launch()
   const page = await browser.newPage()
   const navigationPromise = page.waitForNavigation()
-  await page.goto(url)
+  await page.goto(`${url}/${path.join(distDir, 'index.html')}`)
   await page.setViewport({ width: 1440, height: 810 })
   await navigationPromise
 
@@ -24,11 +30,11 @@ export const benchmark = async (url: string, task: Task) => {
 
   await page.tracing.start({ path: '/dev/null' })
 
-  console.time(dist)
+  console.time(distDir)
 
   await task.main?.(page)
 
-  console.timeEnd(dist)
+  console.timeEnd(distDir)
 
   await page.evaluate(async () => {
     await new Promise(resolve => (window as any)
@@ -40,10 +46,14 @@ export const benchmark = async (url: string, task: Task) => {
   await task.after?.(page)
 
   const { traceEvents } = JSON.parse(buffer.toString())
-  const file = path.resolve('public', dist)
-  await fs.writeFile(file, JSON.stringify(traceEvents)
-  )
-  await browser.close()
 
-  return dist
+  await Promise.all([
+    browser.close(),
+    fs.writeFile(
+      path.resolve('public', distDir, 'trace.json'),
+      JSON.stringify(traceEvents)
+    )
+  ])
+
+  return path.join(distDir, 'trace.json')
 }

@@ -1,8 +1,10 @@
 import type { Task } from '@types'
+import { pragma } from 'html-tsx'
 
 export const tasks: Task[] = [
   {
     name: 'typeSingleChar',
+    html: <textarea id="textarea" />,
     before: async page => {
       await page.waitForSelector('#textarea')
     },
@@ -15,6 +17,7 @@ export const tasks: Task[] = [
   },
   {
     name: 'typeMultiChars',
+    html: <textarea id="textarea" />,
     before: async page => {
       await page.waitForSelector('#textarea')
     },
