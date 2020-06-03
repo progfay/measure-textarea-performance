@@ -3,28 +3,30 @@ import { pragma } from 'html-tsx'
 
 export const tasks: Task[] = [
   {
-    name: 'typeSingleChar',
+    name: 'typeCharForEmptyTextArea',
     html: <textarea id="textarea" />,
     before: async page => {
       await page.waitForSelector('#textarea')
+      await page.focus('#textarea')
     },
     main: async page => {
-      const textarea = '#textarea'
-      await page.focus(textarea)
-      await page.type(textarea, 'a')
+      await page.type('#textarea', 'a')
     },
     after: async () => {}
   },
   {
-    name: 'typeMultiChars',
-    html: <textarea id="textarea" />,
+    name: 'typeCharForFilledTextArea',
+    html: (
+      <textarea id="textarea">
+        {'a'.repeat(10 ** 5)}
+      </textarea>
+    ),
     before: async page => {
       await page.waitForSelector('#textarea')
+      await page.focus('#textarea')
     },
     main: async page => {
-      const textarea = '#textarea'
-      await page.focus(textarea)
-      await page.type(textarea, 'a'.repeat(10))
+      await page.type('#textarea', 'a')
     },
     after: async () => {}
   }
