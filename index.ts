@@ -25,7 +25,9 @@ const main = async () => {
     results.push(encodeURIComponent(`${url}/${dist}`))
   }
 
-  await open(`https://chromedevtools.github.io/timeline-viewer/?loadTimelineFromURL=${results.join(',')}`, { wait: true })
+  for (const result of results) {
+    await open(`https://chromedevtools.github.io/timeline-viewer/?loadTimelineFromURL=${result}`, { wait: false })
+  }
 }
 
 main().catch(console.error)
