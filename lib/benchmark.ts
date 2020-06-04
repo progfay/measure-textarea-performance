@@ -23,31 +23,31 @@ export const benchmark = async (url: string, task: Task) => {
 
   await task.before?.(page)
 
-  // await page.evaluate(async () => {
-  //   await Promise.all([
-  //     new Promise(resolve => (window as any)
-  //       .requestIdleCallback(resolve)),
-  //     new Promise(resolve => (window as any)
-  //       .requestAnimationFrame(resolve))
-  //   ])
-  // })
+  await page.evaluate(async () => {
+    await Promise.all([
+      new Promise(resolve => (window as any)
+        .requestIdleCallback(resolve)),
+      new Promise(resolve => (window as any)
+        .requestAnimationFrame(resolve))
+    ])
+  })
 
-  await page.tracing.start({ path: '/dev/null' })
+  await page.tracing.start({ path: '/dev/null', screenshots: true })
 
   console.time(distDir)
 
   await task.main?.(page)
 
-  console.timeEnd(distDir)
+  await page.evaluate(async () => {
+    await Promise.all([
+      new Promise(resolve => (window as any)
+        .requestIdleCallback(resolve)),
+      new Promise(resolve => (window as any)
+        .requestAnimationFrame(resolve))
+    ])
+  })
 
-  // await page.evaluate(async () => {
-  //   await Promise.all([
-  //     new Promise(resolve => (window as any)
-  //       .requestIdleCallback(resolve)),
-  //     new Promise(resolve => (window as any)
-  //       .requestAnimationFrame(resolve))
-  //   ])
-  // })
+  console.timeEnd(distDir)
 
   const buffer = await page.tracing.stop()
 
